@@ -81,6 +81,20 @@
             border-radius: 20px; margin-top: 15px; z-index: 10;
         }
 
+        #lives-container {
+            display: flex;
+            width: 100%;
+            max-width: 1200px;
+            padding: 0 40px;
+            box-sizing: border-box;
+            justify-content: flex-start;
+            margin-top: 10px;
+            font-family: var(--font-ui);
+            font-size: 2.2rem;
+            color: white;
+            text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.5);
+        }
+
         #grid-area {
             flex-grow: 1; width: 100%; display: flex;
             justify-content: center; align-items: center; position: relative;
@@ -161,6 +175,11 @@
                 padding: 6px 20px;
                 margin-top: 10px;
             }
+            #lives-container {
+                font-size: 1.5rem;
+                padding: 0 20px;
+                margin-top: 5px;
+            }
             #grid {
                 padding: 140px 10px 20px 10px;
                 gap: 12px;
@@ -222,6 +241,8 @@
             <span>Level: <b id="lvl-display">1</b></span>
             <span>Time: <b id="timer-display">0</b>s</span>
             <span>Progress: <b id="prog-display">0/0</b></span>
+        </div>
+        <div id="lives-container">
             <span>Lives: <span id="lives-display">❤️❤️❤️</span></span>
         </div>
 
@@ -245,6 +266,14 @@
             <div>
                 <button class="btn" style="background: #a0aec0; box-shadow: 0 6px 0 #718096;" onclick="exitToMenu()">MENU</button>
             </div>
+        </div>
+    </div>
+
+    <div id="game-over-popup" class="hidden" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 10000; justify-content: center; align-items: center; background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(4px);">
+        <div class="glass-panel" style="border-color: var(--error); max-width: 500px; width: 80%;">
+            <h2 style="font-family: var(--font-title); font-size: 4.5rem; color: var(--error); text-shadow: 2px 2px 0 white; margin-bottom: 20px;">Game Over!</h2>
+            <p style="font-family: var(--font-body); font-size: 2rem; margin-bottom: 30px;">You ran out of lives!</p>
+            <button class="btn" style="font-size: 1.8rem; padding: 15px 40px;" onclick="closeGameOver()">EXIT TO MENU</button>
         </div>
     </div>
 
@@ -413,8 +442,9 @@
 
             if (remainingLives <= 0) {
                 clearInterval(timer);
-                alert("Game Over!");
-                exitToMenu();
+                // Trigger modal instead of alert
+                document.getElementById('game-over-popup').style.display = 'flex';
+                document.getElementById('game-over-popup').classList.remove('hidden');
             }
         }
     }
@@ -433,6 +463,11 @@
             state = "ANSWERING";
             updateQuestion();
         }
+    }
+
+    function closeGameOver() {
+        document.getElementById('game-over-popup').classList.add('hidden');
+        exitToMenu();
     }
 
     function exitToMenu() {
