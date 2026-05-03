@@ -145,6 +145,55 @@
             box-sizing: border-box;
             z-index: 10;
         }
+
+        /* iPad and Tablet scaling to prevent overlap */
+        @media (max-width: 1024px) {
+            h1 { font-size: 3.5rem; }
+            #question-box {
+                font-size: 1.8rem;
+                min-width: 320px;
+                top: 100px;
+                padding: 8px 20px;
+            }
+            .header-info {
+                font-size: 1.5rem;
+                gap: 15px;
+                padding: 6px 20px;
+                margin-top: 10px;
+            }
+            #grid {
+                padding: 140px 10px 20px 10px;
+                gap: 12px;
+            }
+            .card {
+                width: 130px;
+                height: 130px;
+            }
+            .card-back {
+                font-size: 3.5rem;
+            }
+            .btn {
+                padding: 10px 20px;
+                font-size: 1.3rem;
+                margin: 5px;
+            }
+            #audio-controls {
+                top: 10px;
+                left: 10px;
+                padding: 6px 10px;
+            }
+            #fullscreen-btn {
+                top: 10px;
+                right: 10px;
+                padding: 6px 12px;
+                font-size: 1rem;
+            }
+            #feedback {
+                font-size: 1.6rem;
+                height: 2.5rem;
+                margin: 2px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -173,6 +222,7 @@
             <span>Level: <b id="lvl-display">1</b></span>
             <span>Time: <b id="timer-display">0</b>s</span>
             <span>Progress: <b id="prog-display">0/0</b></span>
+            <span>Lives: <span id="lives-display">❤️❤️❤️</span></span>
         </div>
 
         <div id="grid-area">
@@ -225,6 +275,7 @@
     const levels = [{count:5,time:10},{count:6,time:12},{count:7,time:14},{count:8,time:16},{count:9,time:18},{count:10,time:20},{count:11,time:20},{count:12,time:20},{count:13,time:20}];
 
     let currentLvl = 0, selected = [], questions = [], qIdx = 0, state = "IDLE", timer;
+    let remainingLives = 3;
 
     const lvlBox = document.getElementById('lvl-btns');
     levels.forEach((_, i) => {
@@ -259,9 +310,23 @@
         document.getElementById('timer-display').innerText = config.time;
         document.getElementById('prog-display').innerText = `0/${config.count}`;
 
+        // Set Hearts depending on level
+        if (currentLvl >= 0 && currentLvl <= 2) {
+            remainingLives = 3;
+        } else if (currentLvl >= 3 && currentLvl <= 5) {
+            remainingLives = 4;
+        } else {
+            remainingLives = 5;
+        }
+        updateLivesDisplay();
+
         selected = [...wordList].sort(() => 0.5 - Math.random()).slice(0, config.count).map((name, i) => ({ name, id: i }));
         questions = [...selected].sort(() => 0.5 - Math.random());
         renderGrid();
+    }
+
+    function updateLivesDisplay() {
+        document.getElementById('lives-display').innerText = '❤️'.repeat(remainingLives);
     }
 
     function renderGrid() {
@@ -341,6 +406,16 @@
                     qBox.classList.remove('shake-effect');
                 }
             }, 800);
+
+            // Deduct life
+            remainingLives--;
+            updateLivesDisplay();
+
+            if (remainingLives <= 0) {
+                clearInterval(timer);
+                alert("Game Over!");
+                exitToMenu();
+            }
         }
     }
 
