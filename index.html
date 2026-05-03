@@ -54,9 +54,9 @@
 
         #audio-controls {
             position: fixed; top: 20px; left: 20px; z-index: 1000;
-            background: rgba(255, 255, 255, 0.9); padding: 10px 15px;
-            border-radius: 15px; border: 3px solid var(--primary);
-            display: flex; align-items: center; gap: 10px;
+            background: rgba(255, 255, 255, 0.9); padding: 8px 12px;
+            border-radius: 12px; border: 3px solid var(--primary);
+            display: flex; align-items: center; gap: 8px;
         }
 
         #fullscreen-btn {
@@ -67,16 +67,16 @@
         }
 
         #question-box {
-            position: fixed; top: 120px; left: 50%; transform: translateX(-50%);
-            background: white; padding: 10px 40px; border-radius: 50px;
-            border: 6px solid var(--primary); font-family: var(--font-title);
-            font-size: 2.5rem; z-index: 200; box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-            display: none; text-align: center; min-width: 450px;
+            position: fixed; top: 125px; left: 50%; transform: translateX(-50%);
+            background: white; padding: 8px 30px; border-radius: 50px;
+            border: 5px solid var(--primary); font-family: var(--font-title);
+            font-size: 2.1rem; z-index: 200; box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+            display: none; text-align: center; min-width: 420px;
         }
 
         .header-info {
-            display: flex; gap: 40px; font-family: var(--font-ui); font-size: 2.2rem;
-            background: rgba(255,255,255,0.9); padding: 10px 40px;
+            display: flex; gap: 35px; font-family: var(--font-ui); font-size: 1.8rem;
+            background: rgba(255,255,255,0.9); padding: 6px 30px;
             border-radius: 20px; margin-top: 50px; z-index: 10;
         }
 
@@ -87,28 +87,26 @@
             padding: 0 40px;
             box-sizing: border-box;
             justify-content: flex-start;
-            margin-top: 15px;
+            margin-top: 4px;
             font-family: var(--font-ui);
-            font-size: 2.2rem;
+            font-size: 1.5rem;
             color: white;
-            text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.5);
+            text-shadow: 1.5px 1.5px 0 rgba(0, 0, 0, 0.5);
         }
 
         #grid-area {
             flex-grow: 1; width: 100%; display: flex;
-            justify-content: center; align-items: flex-start;
-            position: relative; overflow-y: auto; max-height: 62vh;
-            scrollbar-width: none; -ms-overflow-style: none;
+            justify-content: center; align-items: center;
+            position: relative; overflow: hidden; max-height: 60vh;
         }
-        #grid-area::-webkit-scrollbar { display: none; }
 
         #grid {
             display: flex; flex-wrap: wrap; justify-content: center;
-            gap: 20px; max-width: 1200px; padding: 20px 20px 40px 20px;
+            gap: 14px; max-width: 1200px; padding: 10px 20px 20px 20px;
             transition: filter 0.3s ease;
         }
 
-        .card { width: 190px; height: 190px; perspective: 1000px; cursor: pointer; }
+        .card { width: 165px; height: 165px; perspective: 1000px; cursor: pointer; }
         .card-inner {
             position: relative; width: 100%; height: 100%;
             transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
@@ -119,20 +117,20 @@
 
         .card-front, .card-back {
             position: absolute; width: 100%; height: 100%;
-            backface-visibility: hidden; border-radius: 20px;
+            backface-visibility: hidden; border-radius: 18px;
             display: flex; align-items: center; justify-content: center;
-            background: white; box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+            background: white; box-shadow: 0 6px 15px rgba(0,0,0,0.15);
         }
-        .card-back { background: #fff3bf; color: #e59a1c; transform: rotateY(180deg); font-family: var(--font-ui); font-size: 5.5rem; }
-        .card-front img { max-width: 90%; max-height: 90%; object-fit: contain; }
+        .card-back { background: #fff3bf; color: #e59a1c; transform: rotateY(180deg); font-family: var(--font-ui); font-size: 4.8rem; }
+        .card-front img { max-width: 85%; max-height: 85%; object-fit: contain; }
 
         .btn {
-            padding: 15px 35px; font-family: var(--font-ui); font-size: 1.8rem;
-            cursor: pointer; border: none; border-radius: 15px;
-            background: var(--primary); color: white; box-shadow: 0 6px 0 #7c6fd1; margin: 10px;
+            padding: 11px 28px; font-family: var(--font-ui); font-size: 1.5rem;
+            cursor: pointer; border: none; border-radius: 12px;
+            background: var(--primary); color: white; box-shadow: 0 4px 0 #7c6fd1; margin: 6px;
         }
-        .btn:active { transform: translateY(4px); box-shadow: 0 2px 0 #7c6fd1; }
-        .btn-green { background: var(--success); box-shadow: 0 6px 0 #388e3c; }
+        .btn:active { transform: translateY(3px); box-shadow: 0 1px 0 #7c6fd1; }
+        .btn-green { background: var(--success); box-shadow: 0 4px 0 #388e3c; }
         
         .btn-grayed {
             background: #a0aec0 !important;
@@ -144,11 +142,11 @@
 
         .blurred { filter: blur(50px); pointer-events: none; }
         .hidden { display: none !important; }
-        #feedback { font-family: var(--font-title); font-size: 2.2rem; height: 3rem; z-index: 10; margin: 5px; }
+        #feedback { font-family: var(--font-title); font-size: 2rem; height: 2.6rem; z-index: 10; margin: 4px; }
 
         #ready-overlay {
             display: flex; flex-direction: column; align-items: center;
-            background: rgba(255,255,255,0.4); padding: 30px; border-radius: 30px;
+            background: rgba(255,255,255,0.4); padding: 24px; border-radius: 24px;
         }
 
         .bottom-controls {
@@ -156,63 +154,82 @@
             display: flex;
             justify-content: space-between;
             align-items: flex-end;
-            padding: 0 30px 20px 30px;
+            padding: 0 25px 14px 25px;
             box-sizing: border-box;
             z-index: 10;
         }
 
         @media (max-width: 1024px) {
-            h1 { font-size: 3.5rem; }
+            h1 { font-size: 2.5rem; margin-bottom: 10px; }
             #question-box {
-                font-size: 1.8rem;
-                min-width: 320px;
-                top: 120px;
-                padding: 8px 20px;
+                font-size: 1.25rem;
+                min-width: 270px;
+                top: 95px;
+                padding: 5px 12px;
+                border-width: 4px;
             }
             .header-info {
-                font-size: 1.5rem;
-                gap: 15px;
-                padding: 6px 20px;
-                margin-top: 40px;
+                font-size: 1rem;
+                gap: 10px;
+                padding: 4px 12px;
+                margin-top: 42px;
+                border-radius: 15px;
             }
             #lives-container {
-                font-size: 1.5rem;
-                padding: 0 20px;
-                margin-top: 10px;
+                font-size: 1rem;
+                padding: 0 16px;
+                margin-top: 2px;
             }
-            #grid-area { max-height: 55vh; }
             #grid {
-                padding: 10px 10px 20px 10px;
-                gap: 12px;
+                padding: 4px 4px 10px 4px;
+                gap: 8px;
             }
             .card {
-                width: 125px;
-                height: 125px;
+                width: 76px;
+                height: 76px;
+                border-radius: 12px;
+            }
+            .card-front, .card-back {
+                border-radius: 12px;
             }
             .card-back {
-                font-size: 3.5rem;
+                font-size: 2.1rem;
             }
             .btn {
-                padding: 10px 20px;
-                font-size: 1.3rem;
-                margin: 5px;
+                padding: 6px 12px;
+                font-size: 0.95rem;
+                margin: 3px;
+                border-radius: 8px;
+                box-shadow: 0 3px 0 #7c6fd1;
             }
             #audio-controls {
-                top: 10px;
-                left: 10px;
-                padding: 4px 8px;
-                font-size: 12px;
+                top: 6px;
+                left: 6px;
+                padding: 2px 4px;
+                font-size: 8px;
+                border-width: 2px;
             }
             #fullscreen-btn {
-                top: 10px;
-                right: 10px;
-                padding: 6px 12px;
-                font-size: 10px;
+                top: 6px;
+                right: 6px;
+                padding: 3px 6px;
+                font-size: 8px;
             }
             #feedback {
-                font-size: 1.6rem;
-                height: 2.5rem;
+                font-size: 1.15rem;
+                height: 1.6rem;
                 margin: 2px;
+            }
+            #ready-overlay {
+                padding: 16px;
+            }
+            #ready-overlay h2 {
+                font-size: 2.5rem;
+                margin-bottom: 10px;
+            }
+            #ready-overlay .btn {
+                font-size: 1.6rem;
+                padding: 12px 28px;
             }
         }
     </style>
@@ -224,8 +241,8 @@
     <audio id="sfx-wrong" src="wrong.mp3"></audio>
 
     <div id="audio-controls">
-        <button id="mute-btn" onclick="toggleMute()" style="background:none; border:none; cursor:pointer; font-size:1.5rem;">🔊</button>
-        <input type="range" id="volume-slider" min="0" max="1" step="0.1" value="0.5" onchange="updateVolume(this.value)">
+        <button id="mute-btn" onclick="toggleMute()" style="background:none; border:none; cursor:pointer; font-size:1.1rem;">🔊</button>
+        <input type="range" id="volume-slider" min="0" max="1" step="0.1" value="0.5" style="width: 50px;" onchange="updateVolume(this.value)">
     </div>
 
     <button id="fullscreen-btn" onclick="toggleFullScreen()">FULLSCREEN ⛶</button>
@@ -234,7 +251,7 @@
     <div id="level-select">
         <div class="glass-panel">
             <h1>Memorize It</h1>
-            <div id="lvl-btns" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px;"></div>
+            <div id="lvl-btns" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;"></div>
         </div>
     </div>
 
@@ -245,14 +262,14 @@
             <span>Progress: <b id="prog-display">0/0</b></span>
         </div>
         <div id="lives-container">
-            <span>Lives: <span id="lives-display">❤️❤️❤️</span></span>
+            <span>Lives: <span id="lives-display" style="font-size: 1.2rem;">❤️❤️❤️</span></span>
         </div>
 
         <div id="grid-area">
             <div id="start-prompt" class="hidden" style="position: absolute; z-index: 150;">
                 <div id="ready-overlay">
-                    <h2 style="font-family: var(--font-title); font-size: 4rem; color: var(--primary); margin-bottom: 20px; text-shadow: 2px 2px 0 white;">GET READY!</h2>
-                    <button class="btn" style="font-size: 3.5rem; padding: 30px 60px;" onclick="beginCountdown()">START!</button>
+                    <h2 style="font-family: var(--font-title); font-size: 3rem; color: var(--primary); margin-bottom: 10px; text-shadow: 2px 2px 0 white;">GET READY!</h2>
+                    <button class="btn" style="font-size: 2rem; padding: 16px 36px;" onclick="beginCountdown()">START!</button>
                 </div>
             </div>
             <div id="grid"></div>
@@ -266,16 +283,16 @@
                 <button id="lvl-done-btn" class="btn btn-grayed hidden">Level Cleared</button>
             </div>
             <div>
-                <button class="btn" style="background: #a0aec0; box-shadow: 0 6px 0 #718096;" onclick="exitToMenu()">MENU</button>
+                <button class="btn" style="background: #a0aec0; box-shadow: 0 4px 0 #718096;" onclick="exitToMenu()">MENU</button>
             </div>
         </div>
     </div>
 
     <div id="game-over-popup" class="hidden" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 10000; justify-content: center; align-items: center; background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(4px);">
-        <div class="glass-panel" style="border-color: var(--error); max-width: 500px; width: 80%;">
-            <h2 style="font-family: var(--font-title); font-size: 4.5rem; color: var(--error); text-shadow: 2px 2px 0 white; margin-bottom: 20px;">Game Over!</h2>
-            <p style="font-family: var(--font-body); font-size: 2rem; margin-bottom: 30px;">You ran out of lives!</p>
-            <button class="btn" style="font-size: 1.8rem; padding: 15px 40px;" onclick="closeGameOver()">EXIT TO MENU</button>
+        <div class="glass-panel" style="border-color: var(--error); max-width: 400px; width: 75%;">
+            <h2 style="font-family: var(--font-title); font-size: 3.5rem; color: var(--error); text-shadow: 2px 2px 0 white; margin-bottom: 12px;">Game Over!</h2>
+            <p style="font-family: var(--font-body); font-size: 1.6rem; margin-bottom: 20px;">You ran out of lives!</p>
+            <button class="btn" style="font-size: 1.4rem; padding: 10px 30px;" onclick="closeGameOver()">EXIT TO MENU</button>
         </div>
     </div>
 
