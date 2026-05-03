@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Memorize It</title>
+    <style>
+        @font-face { font-family: 'Milky'; src: url('MilkyMoringaBold-zr5la.ttf'); }
+        @font-face { font-family: 'Nara'; src: url('Nara-DYGrR.ttf'); }
+        @font-face { font-family: 'Orange'; src: url('OrangeSlices-lgPK0.otf'); }
+        @font-face { font-family: 'Scholarly'; src: url('ScholarlyAmbitionRegular-PKdwB.ttf'); }
+
+        :root {
+            --primary: #9d8df1;
+            --success: #48bb78;
+            --error: #f56565;
+            --font-title: 'Milky', cursive;
+            --font-ui: 'Orange', sans-serif;
+            --font-body: 'Scholarly', serif;
+        }
+
+        body, html {
+            margin: 0; padding: 0; width: 100%; height: 100%;
+            overflow: hidden; display: flex; flex-direction: column;
+            align-items: center; font-family: var(--font-body);
+            background-image: url('background.png');
+            background-size: cover;
+            background-position: center;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(-50%); }
+            20%, 60% { transform: translateX(-52%); }
+            40%, 80% { transform: translateX(-48%); }
+        }
+        .shake-effect {
+            animation: shake 0.4s ease-in-out;
+            border-color: var(--error) !important;
+        }
+
+        #level-select {
+            position: absolute; width: 100%; height: 100%;
+            display: flex; justify-content: center; align-items: center; z-index: 100;
+        }
+
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.85); padding: 40px;
+            border-radius: 40px; border: 8px solid var(--primary);
+            text-align: center; box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            backdrop-filter: blur(8px);
+        }
+
+        h1 { font-family: var(--font-title); font-size: 5.5rem; margin: 0 0 20px 0; text-shadow: 4px 4px 0 white; }
+
+        #audio-controls {
+            position: fixed; top: 20px; left: 20px; z-index: 1000;
+            background: rgba(255, 255, 255, 0.9); padding: 10px 15px;
+            border-radius: 15px; border: 3px solid var(--primary);
+            display: flex; align-items: center; gap: 10px;
+        }
+
+        #fullscreen-btn {
+            position: fixed; top: 20px; right: 20px; z-index: 1000;
+            background: var(--primary); color: white; border: none;
+            padding: 10px 20px; border-radius: 12px; font-family: var(--font-ui);
+            cursor: pointer; box-shadow: 0 4px 0 #7c6fd1;
+        }
+
+        /* --- FIXED QUESTION BOX POSITION --- */
+        #question-box {
+            position: fixed; top: 80px; left: 50%; transform: translateX(-50%);
+            background: white; padding: 10px 40px; border-radius: 50px;
+            border: 6px solid var(--primary); font-family: var(--font-title);
+            font-size: 2.5rem; z-index: 200; box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            display: none; text-align: center; min-width: 450px;
+        }
+
+        .header-info {
+            display: flex; gap: 40px; font-family: var(--font-ui); font-size: 2.2rem;
+            background: rgba(255,255,255,0.9); padding: 10px 40px;
+            border-radius: 20px; margin-top: 15px; z-index: 10;
+        }
+
+        #grid-area {
+            flex-grow: 1; width: 100%; display: flex;
+            justify-content: center; align-items: center; position: relative;
+        }
+
+        /* --- INCREASED PADDING TO PREVENT OVERLAP --- */
+        #grid {
+            display: flex; flex-wrap: wrap; justify-content: center;
+            gap: 20px; max-width: 1200px; padding: 150px 20px 40px 20px;
+            transition: filter 0.3s ease;
+        }
+
+        .card { width: 190px; height: 190px; perspective: 1000px; cursor: pointer; }
+        .card-inner {
+            position: relative; width: 100%; height: 100%;
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            transform-style: preserve-3d;
+        }
+        
+        .card.flipped .card-inner { transform: rotateY(180deg); }
+
+        .card-front, .card-back {
+            position: absolute; width: 100%; height: 100%;
+            backface-visibility: hidden; border-radius: 20px;
+            display: flex; align-items: center; justify-content: center;
+            background: white; box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+        }
+        .card-back { background: #fff3bf; color: #e59a1c; transform: rotateY(180deg); font-family: var(--font-ui); font-size: 5.5rem; }
+        .card-front img { max-width: 90%; max-height: 90%; object-fit: contain; }
+
+        .btn {
+            padding: 15px 35px; font-family: var(--font-ui); font-size: 1.8rem;
+            cursor: pointer; border: none; border-radius: 15px;
+            background: var(--primary); color: white; box-shadow: 0 6px 0 #7c6fd1; margin: 10px;
+        }
+        .btn:active { transform: translateY(4px); box-shadow: 0 2px 0 #7c6fd1; }
+        .btn-green { background: var(--success); box-shadow: 0 6px 0 #388e3c; }
+        
+        .btn-grayed {
+            background: #a0aec0 !important;
+            box-shadow: none !important;
+            cursor: default !important;
+            transform: none !important;
+            opacity: 0.8;
+        }
+
+        .blurred { filter: blur(50px); pointer-events: none; }
+        .hidden { display: none !important; }
+        #feedback { font-family: var(--font-title); font-size: 2.2rem; height: 3rem; z-index: 10; margin: 5px; }
+
+        #ready-overlay {
+            display: flex; flex-direction: column; align-items: center;
+            background: rgba(255,255,255,0.4); padding: 30px; border-radius: 30px;
+        }
+
+        .bottom-controls {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            padding: 0 30px 20px 30px;
+            box-sizing: border-box;
+            z-index: 10;
+        }
+    </style>
+</head>
+<body>
+
+    <audio id="bg-music" src="bmusic.mp3" loop></audio>
+    <audio id="sfx-correct" src="correct.mp3"></audio>
+    <audio id="sfx-wrong" src="wrong.mp3"></audio>
+
+    <div id="audio-controls">
+        <button id="mute-btn" onclick="toggleMute()" style="background:none; border:none; cursor:pointer; font-size:1.5rem;">🔊</button>
+        <input type="range" id="volume-slider" min="0" max="1" step="0.1" value="0.5" onchange="updateVolume(this.value)">
+    </div>
+
+    <button id="fullscreen-btn" onclick="toggleFullScreen()">FULLSCREEN ⛶</button>
+    <div id="question-box">WHERE IS THE ITEM?</div>
+
+    <div id="level-select">
+        <div class="glass-panel">
+            <h1>Memorize It</h1>
+            <div id="lvl-btns" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px;"></div>
+        </div>
+    </div>
+
+    <div id="game-play" class="hidden" style="width:100%; height:100%; display:flex; flex-direction:column; align-items:center;">
+        <div class="header-info">
+            <span>Level: <b id="lvl-display">1</b></span>
+            <span>Time: <b id="timer-display">0</b>s</span>
+            <span>Progress: <b id="prog-display">0/0</b></span>
+        </div>
+
+        <div id="grid-area">
+            <div id="start-prompt" class="hidden" style="position: absolute; z-index: 150;">
+                <div id="ready-overlay">
+                    <h2 style="font-family: var(--font-title); font-size: 4rem; color: var(--primary); margin-bottom: 20px; text-shadow: 2px 2px 0 white;">GET READY!</h2>
+                    <button class="btn" style="font-size: 3.5rem; padding: 30px 60px;" onclick="beginCountdown()">START!</button>
+                </div>
+            </div>
+            <div id="grid"></div>
+        </div>
+
+        <div id="feedback"></div>
+        
+        <div class="bottom-controls">
+            <div>
+                <button id="next-btn" class="btn btn-green hidden" onclick="goNext()">NEXT ITEM →</button>
+                <button id="lvl-done-btn" class="btn btn-grayed hidden">Level Cleared</button>
+            </div>
+            <div>
+                <button class="btn" style="background: #a0aec0; box-shadow: 0 6px 0 #718096;" onclick="exitToMenu()">MENU</button>
+            </div>
+        </div>
+    </div>
+
+<script>
+    const assetFolder = "CLOTHING";
+    const wordList = ["beanie", "belt", "dress", "gloves", "hat", "mittens", "pants", "scarf", "shoes", "shorts", "socks", "sweater", "T-Shirt"];
+    const pluralItems = ["gloves", "mittens", "pants", "shoes", "shorts", "socks"];
+
+    const bgMusic = document.getElementById('bg-music');
+    const sfxCorrect = document.getElementById('sfx-correct');
+    const sfxWrong = document.getElementById('sfx-wrong');
+    let isMuted = false;
+
+    function startMusic() {
+        bgMusic.play().catch(() => { console.log("Music waiting for interaction"); });
+    }
+
+    function toggleMute() {
+        isMuted = !isMuted;
+        bgMusic.muted = sfxCorrect.muted = sfxWrong.muted = isMuted;
+        document.getElementById('mute-btn').innerText = isMuted ? "🔇" : "🔊";
+    }
+
+    function updateVolume(val) {
+        bgMusic.volume = sfxCorrect.volume = sfxWrong.volume = val;
+    }
+
+    const levels = [{count:5,time:10},{count:6,time:12},{count:7,time:14},{count:8,time:16},{count:9,time:18},{count:10,time:20},{count:11,time:20},{count:12,time:20},{count:13,time:20}];
+
+    let currentLvl = 0, selected = [], questions = [], qIdx = 0, state = "IDLE", timer;
+
+    const lvlBox = document.getElementById('lvl-btns');
+    levels.forEach((_, i) => {
+        const b = document.createElement('button');
+        b.className = 'btn'; b.innerText = i + 1;
+        b.onclick = () => { currentLvl = i; startLevel(); };
+        lvlBox.appendChild(b);
+    });
+
+    function toggleFullScreen() {
+        if (!document.fullscreenElement) {
+            document.documentElement.requestFullscreen().catch(err => { alert(`Error: ${err.message}`); });
+        } else {
+            document.exitFullscreen();
+        }
+    }
+
+    function startLevel() {
+        startMusic();
+        document.getElementById('level-select').classList.add('hidden');
+        document.getElementById('game-play').classList.remove('hidden');
+        document.getElementById('start-prompt').classList.remove('hidden');
+        document.getElementById('grid').classList.add('blurred');
+        document.getElementById('question-box').style.display = 'none';
+        document.getElementById('feedback').innerText = "";
+        document.getElementById('next-btn').classList.add('hidden');
+        document.getElementById('lvl-done-btn').classList.add('hidden');
+
+        qIdx = 0;
+        const config = levels[currentLvl];
+        document.getElementById('lvl-display').innerText = currentLvl + 1;
+        document.getElementById('timer-display').innerText = config.time;
+        document.getElementById('prog-display').innerText = `0/${config.count}`;
+
+        selected = [...wordList].sort(() => 0.5 - Math.random()).slice(0, config.count).map((name, i) => ({ name, id: i }));
+        questions = [...selected].sort(() => 0.5 - Math.random());
+        renderGrid();
+    }
+
+    function renderGrid() {
+        const g = document.getElementById('grid');
+        g.innerHTML = "";
+        let nums = Array.from({length: selected.length}, (_, i) => i + 1).sort(() => 0.5 - Math.random());
+        selected.forEach((item, i) => {
+            const card = document.createElement('div');
+            card.className = 'card';
+            card.innerHTML = `
+                <div class="card-inner">
+                    <div class="card-front"><img src="${assetFolder}/${item.name}.png"></div>
+                    <div class="card-back">${nums[i]}</div>
+                </div>`;
+            card.onclick = () => handleChoice(item.id, card);
+            g.appendChild(card);
+        });
+    }
+
+    function beginCountdown() {
+        document.getElementById('start-prompt').classList.add('hidden');
+        document.getElementById('grid').classList.remove('blurred');
+        state = "MEMORIZING";
+        let timeLeft = levels[currentLvl].time;
+        document.getElementById('timer-display').innerText = timeLeft;
+        
+        clearInterval(timer);
+        timer = setInterval(() => {
+            timeLeft--;
+            document.getElementById('timer-display').innerText = timeLeft;
+            if (timeLeft <= 0) { clearInterval(timer); flipAndAsk(); }
+        }, 1000);
+    }
+
+    function flipAndAsk() {
+        state = "ANSWERING";
+        document.querySelectorAll('.card').forEach(c => c.classList.add('flipped'));
+        document.getElementById('question-box').style.display = 'block';
+        updateQuestion();
+    }
+
+    function updateQuestion() {
+        const item = questions[qIdx].name;
+        const verb = pluralItems.includes(item) ? "ARE" : "IS";
+        document.getElementById('question-box').innerText = `WHERE ${verb} THE ${item.toUpperCase()}?`;
+        document.getElementById('prog-display').innerText = `${qIdx + 1}/${questions.length}`;
+    }
+
+    function handleChoice(id, card) {
+        if (state !== "ANSWERING") return;
+        const qBox = document.getElementById('question-box');
+
+        if (id === questions[qIdx].id) {
+            sfxCorrect.currentTime = 0;
+            sfxCorrect.play();
+            card.classList.remove('flipped');
+            state = "WAITING";
+            document.getElementById('feedback').innerText = "CORRECT! ✨";
+            document.getElementById('feedback').style.color = "var(--success)";
+            document.getElementById('next-btn').classList.remove('hidden');
+            qBox.classList.remove('shake-effect');
+        } else {
+            sfxWrong.currentTime = 0;
+            sfxWrong.play();
+            
+            qBox.classList.remove('shake-effect'); 
+            void qBox.offsetWidth; 
+            qBox.classList.add('shake-effect');
+
+            document.getElementById('feedback').innerText = "TRY AGAIN! ❌";
+            document.getElementById('feedback').style.color = "var(--error)";
+            card.classList.remove('flipped');
+            setTimeout(() => { 
+                if(state === "ANSWERING") {
+                    card.classList.add('flipped');
+                    document.getElementById('feedback').innerText = "";
+                    qBox.classList.remove('shake-effect');
+                }
+            }, 800);
+        }
+    }
+
+    function goNext() {
+        qIdx++;
+        document.getElementById('next-btn').classList.add('hidden');
+        document.getElementById('feedback').innerText = "";
+        
+        if (qIdx >= questions.length) {
+            state = "DONE";
+            document.getElementById('question-box').innerText = "WELL DONE!";
+            document.getElementById('lvl-done-btn').classList.remove('hidden');
+            document.getElementById('prog-display').innerText = `${questions.length}/${questions.length}`;
+        } else {
+            state = "ANSWERING";
+            updateQuestion();
+        }
+    }
+
+    function exitToMenu() {
+        clearInterval(timer);
+        document.getElementById('game-play').classList.add('hidden');
+        document.getElementById('level-select').classList.remove('hidden');
+        document.getElementById('question-box').style.display = 'none';
+        document.getElementById('question-box').classList.remove('shake-effect');
+    }
+</script>
+</body>
+</html>
